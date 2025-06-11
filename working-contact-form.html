@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Working Contact Form - Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input, select, textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        button { background: #007bff; color: white; padding: 12px 24px; border: none; border-radius: 5px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .alert { padding: 15px; border-radius: 5px; margin: 20px 0; }
+        .alert-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-danger { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .alert-info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+    </style>
+</head>
+<body>
+    <h1>Contact Form Test - Direct to nageshsonawane870@gmail.com</h1>
+    <p>This is a simplified working version to test email delivery</p>
+    
+    <form id="testContactForm">
+        <div class="form-group">
+            <label for="name">Name *</label>
+            <input type="text" id="name" name="name" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email">
+        </div>
+        
+        <div class="form-group">
+            <label for="phone">Phone *</label>
+            <input type="tel" id="phone" name="phone" required>
+        </div>
+        
+        <div class="form-group">
+            <label for="course">Course *</label>
+            <select id="course" name="course" required>
+                <option value="">Select Course</option>
+                <option value="Beginner's English">Beginner's English</option>
+                <option value="Intermediate English">Intermediate English</option>
+                <option value="Advanced English">Advanced English</option>
+                <option value="Interview Preparation">Interview Preparation</option>
+                <option value="Public Speaking">Public Speaking</option>
+            </select>
+        </div>
+        
+        <div class="form-group">
+            <label for="message">Message</label>
+            <textarea id="message" name="message" rows="4"></textarea>
+        </div>
+        
+        <button type="submit" id="submitBtn">Send Message</button>
+    </form>
+    
+    <div id="alertMessage"></div>
+    
+    <script>
+        document.getElementById('testContactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const alertMessage = document.getElementById('alertMessage');
+            
+            // Show loading
+            submitBtn.textContent = 'Sending...';
+            submitBtn.disabled = true;
+            alertMessage.innerHTML = '';
+            
+            // Get form data
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: document.getElementById('email').value.trim() || 'no-email@example.com',
+                phone: document.getElementById('phone').value.trim(),
+                course: document.getElementById('course').value,
+                message: document.getElementById('message').value.trim() || 'No message provided'
+            };
+            
+            // Validate required fields
+            if (!formData.name || !formData.phone || !formData.course) {
+                showAlert('danger', 'Please fill in all required fields');
+                resetButton();
+                return;
+            }
+            
+            // Try multiple email services
+            sendViaFormSubmit(formData);
+        });
+          function sendViaFormSubmit(formData) {
+            const form = new FormData();
+            form.append('name', formData.name);
+            form.append('email', formData.email || 'no-email-provided@example.com');
+            form.append('phone', formData.phone);
+            form.append('course', formData.course);
+            form.append('message', formData.message || 'No message provided');
+            form.append('_subject', `New Enquiry: ${formData.course} Course Interest from ${formData.name}`);
+            form.append('_replyto', formData.email || 'no-reply@example.com');
+            form.append('_captcha', 'false');
+            form.append('_template', 'basic'); // Clean format without table
+            form.append('_format', 'plain'); // Plain text format
+            form.append('_autoresponse', 'Thank you for your enquiry! We will get back to you within 24 hours.');
+            
+            // Custom email body
+            const customMessage = `
+DAMBELKAR'S ENGLISH CLASSES - NEW ENQUIRY
+
+Student Details:
+================
+Name: ${formData.name}
+Email: ${formData.email || 'Not provided'}
+Phone: ${formData.phone}
+Course Interest: ${formData.course}
+
+Message:
+========
+${formData.message || 'No additional message provided.'}
+
+---
+This enquiry was submitted through the website contact form.
+Please respond within 24 hours.
+            `;
+            form.append('_email_body', customMessage);
+            
+            fetch('https://formsubmit.co/rohand2315@gmail.com', {
+                method: 'POST',
+                body: form
+            })
+            .then(response => {
+                if (response.ok) {
+                    showAlert('success', 'Message sent successfully! We will contact you soon.');
+                    document.getElementById('testContactForm').reset();
+                } else {
+                    throw new Error('FormSubmit failed');
+                }
+                resetButton();
+            })
+            .catch(error => {
+                console.log('FormSubmit failed, trying Netlify...', error);
+                sendViaNetlify(formData);
+            });
+        }
+        
+        function sendViaNetlify(formData) {
+            const form = new FormData();
+            form.append('form-name', 'contact');
+            form.append('name', formData.name);
+            form.append('email', formData.email);
+            form.append('phone', formData.phone);
+            form.append('course', formData.course);
+            form.append('message', formData.message);
+            
+            fetch('/', {
+                method: 'POST',
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams(form).toString()
+            })
+            .then(response => {
+                if (response.ok) {
+                    showAlert('success', 'Message sent successfully! We will contact you soon.');
+                    document.getElementById('testContactForm').reset();
+                } else {
+                    throw new Error('Netlify failed');
+                }
+                resetButton();
+            })
+            .catch(error => {
+                console.log('Netlify failed, using mailto...', error);
+                useMailtoFallback(formData);
+            });
+        }
+        
+        function useMailtoFallback(formData) {
+            const subject = encodeURIComponent(`Contact Form: ${formData.name} - ${formData.course}`);
+            const body = encodeURIComponent(`
+Name: ${formData.name}
+Email: ${formData.email}
+Phone: ${formData.phone}
+Course Interested: ${formData.course}
+Message: ${formData.message}
+
+Please reply to this inquiry.
+            `);
+            
+            const mailtoLink = `mailto:nageshsonawane870@gmail.com?subject=${subject}&body=${body}`;
+            
+            showAlert('info', `
+                <strong>Direct email services are unavailable.</strong><br>
+                <a href="${mailtoLink}" style="display: inline-block; margin-top: 10px; padding: 8px 16px; background: #007bff; color: white; text-decoration: none; border-radius: 4px;">Open Email Client</a><br>
+                <small style="margin-top: 10px; display: block;">Or contact us directly: <strong>nageshsonawane870@gmail.com</strong> | <strong>+91 9876543210</strong></small>
+            `);
+            resetButton();
+        }
+        
+        function showAlert(type, message) {
+            document.getElementById('alertMessage').innerHTML = `
+                <div class="alert alert-${type}">${message}</div>
+            `;
+        }
+        
+        function resetButton() {
+            document.getElementById('submitBtn').textContent = 'Send Message';
+            document.getElementById('submitBtn').disabled = false;
+        }
+    </script>
+</body>
+</html>
