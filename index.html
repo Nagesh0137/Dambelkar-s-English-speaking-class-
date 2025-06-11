@@ -88,14 +88,16 @@
             box-shadow: 0 5px 15px rgba(255, 126, 95, 0.4);
             color: white;
         }
-        
-        /* Hero Section */
+          /* Hero Section */
         .hero-section {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 100px 0;
+            padding: 120px 0;
             position: relative;
             overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
         }
         
         .hero-section::before {
@@ -107,19 +109,110 @@
             height: 100%;
             background: url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
             opacity: 0.1;
+            animation: backgroundMove 20s ease-in-out infinite;
         }
         
-        .hero-title {
+        /* Animated background shapes */
+        .hero-section::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: rotate 30s linear infinite;
+        }
+        
+        /* Floating particles animation */
+        .particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .particle {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            animation: float 15s infinite;
+        }
+        
+        .particle:nth-child(1) { left: 10%; animation-delay: 0s; animation-duration: 12s; }
+        .particle:nth-child(2) { left: 20%; animation-delay: 2s; animation-duration: 14s; }
+        .particle:nth-child(3) { left: 30%; animation-delay: 4s; animation-duration: 16s; }
+        .particle:nth-child(4) { left: 40%; animation-delay: 6s; animation-duration: 13s; }
+        .particle:nth-child(5) { left: 50%; animation-delay: 8s; animation-duration: 15s; }
+        .particle:nth-child(6) { left: 60%; animation-delay: 10s; animation-duration: 11s; }
+        .particle:nth-child(7) { left: 70%; animation-delay: 12s; animation-duration: 17s; }
+        .particle:nth-child(8) { left: 80%; animation-delay: 14s; animation-duration: 12s; }
+        .particle:nth-child(9) { left: 90%; animation-delay: 16s; animation-duration: 14s; }
+        .particle:nth-child(10) { left: 85%; animation-delay: 18s; animation-duration: 16s; }
+        
+        @keyframes float {
+            0% {
+                opacity: 0;
+                transform: translateY(100vh) rotate(0deg);
+            }
+            10% {
+                opacity: 1;
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-100vh) rotate(360deg);
+            }
+        }
+        
+        @keyframes backgroundMove {
+            0%, 100% {
+                transform: scale(1) translateX(0);
+            }
+            50% {
+                transform: scale(1.1) translateX(20px);
+            }
+        }
+        
+        @keyframes rotate {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+          .hero-title {
             font-size: 3.5rem;
             font-weight: 800;
             margin-bottom: 20px;
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+            z-index: 2;
+            animation: slideInFromLeft 1.2s ease-out;
         }
         
         .hero-subtitle {
             font-size: 1.5rem;
             margin-bottom: 30px;
             font-weight: 300;
+            position: relative;
+            z-index: 2;
+            animation: slideInFromRight 1.2s ease-out 0.3s both;
+            line-height: 1.6;
+        }
+        
+        .hero-buttons {
+            position: relative;
+            z-index: 2;
+            animation: slideInFromBottom 1.2s ease-out 0.6s both;
         }
         
         .hero-buttons .btn {
@@ -128,6 +221,72 @@
             font-weight: 600;
             padding: 12px 30px;
             border-radius: 50px;
+            transform: translateY(0);
+            transition: all 0.3s ease;
+        }
+        
+        .hero-buttons .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hero-image {
+            position: relative;
+            z-index: 2;
+            animation: fadeInScale 1.5s ease-out 0.9s both;
+        }
+        
+        .hero-image img {
+            transition: transform 0.3s ease;
+        }
+        
+        .hero-image:hover img {
+            transform: scale(1.05) rotate(2deg);
+        }
+        
+        /* New animation keyframes */
+        @keyframes slideInFromLeft {
+            0% {
+                opacity: 0;
+                transform: translateX(-100px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInFromRight {
+            0% {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        @keyframes slideInFromBottom {
+            0% {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @keyframes fadeInScale {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
         }
         
         .btn-outline-light:hover {
@@ -630,34 +789,95 @@
             background-color: var(--secondary-color);
             transform: translateY(-3px);
         }
-        
-        /* Animations */
+          /* Animations */
         .animate-up {
-            animation: fadeInUp 1s ease;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease;
+        }
+        
+        .animate-up.in-view {
+            opacity: 1;
+            transform: translateY(0);
         }
         
         .animate-down {
-            animation: fadeInDown 1s ease;
+            opacity: 0;
+            transform: translateY(-30px);
+            transition: all 0.8s ease;
+        }
+        
+        .animate-down.in-view {
+            opacity: 1;
+            transform: translateY(0);
         }
         
         .animate-left {
-            animation: fadeInLeft 1s ease;
+            opacity: 0;
+            transform: translateX(-50px);
+            transition: all 0.8s ease;
+        }
+        
+        .animate-left.in-view {
+            opacity: 1;
+            transform: translateX(0);
         }
         
         .animate-right {
-            animation: fadeInRight 1s ease;
+            opacity: 0;
+            transform: translateX(50px);
+            transition: all 0.8s ease;
+        }
+        
+        .animate-right.in-view {
+            opacity: 1;
+            transform: translateX(0);
         }
         
         .delay-1 {
-            animation-delay: 0.2s;
+            transition-delay: 0.2s;
         }
         
         .delay-2 {
-            animation-delay: 0.4s;
+            transition-delay: 0.4s;
         }
         
         .delay-3 {
-            animation-delay: 0.6s;
+            transition-delay: 0.6s;
+        }
+        
+        /* Pulse animation for buttons */
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(78, 84, 200, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 20px rgba(78, 84, 200, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(78, 84, 200, 0);
+            }
+        }
+        
+        /* Bounce animation for icons */
+        .bounce {
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
         }
         
         /* Responsive Adjustments */
@@ -762,21 +982,33 @@
                 <a href="#contact" class="btn btn-enroll ms-lg-3">Enroll Now</a>
             </div>
         </div>
-    </nav>
-
-    <!-- Hero Section -->
+    </nav>    <!-- Hero Section -->
     <section id="home" class="hero-section">
+        <!-- Animated particles -->
+        <div class="particles">
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+            <div class="particle"></div>
+        </div>
+        
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-7">
-                    <h1 class="hero-title animate-up">Unlock Your English Speaking Potential</h1>
-                    <p class="hero-subtitle animate-up delay-1">Join Dambelkar's Spoken English Classes and transform your communication skills with our proven methodology and expert guidance.</p>
-                    <div class="hero-buttons animate-up delay-2">
-                        <a href="#courses" class="btn btn-light btn-lg">Our Courses</a>
+                    <h1 class="hero-title">Unlock Your English Speaking Potential</h1>
+                    <p class="hero-subtitle">Join Dambelkar's Spoken English Classes and transform your communication skills with our proven methodology and expert guidance.</p>
+                    <div class="hero-buttons">
+                        <a href="#courses" class="btn btn-light btn-lg pulse">Our Courses</a>
                         <a href="#contact" class="btn btn-outline-light btn-lg">Free Demo Class</a>
                     </div>
                 </div>
-                <div class="col-lg-5 d-none d-lg-block animate-right delay-1">
+                <div class="col-lg-5 d-none d-lg-block hero-image">
                     <img src="https://images.unsplash.com/photo-1546410531-bb4caa6b424d?ixlib=rb-1.2.1&auto=format&fit=crop&w=634&q=80" alt="Students learning English" class="img-fluid rounded-3 shadow">
                 </div>
             </div>
@@ -1438,8 +1670,7 @@
                 }
             });
         });
-        
-        // Initialize animations when elements come into view
+          // Initialize animations when elements come into view
         function animateOnScroll() {
             const elements = document.querySelectorAll('.animate-up, .animate-down, .animate-left, .animate-right');
             
@@ -1447,21 +1678,32 @@
                 const elementPosition = element.getBoundingClientRect().top;
                 const windowHeight = window.innerHeight;
                 
-                if (elementPosition < windowHeight - 100) {
-                    element.classList.add('animate__animated');
-                    
-                    if (element.classList.contains('animate-up')) {
-                        element.classList.add('animate__fadeInUp');
-                    } else if (element.classList.contains('animate-down')) {
-                        element.classList.add('animate__fadeInDown');
-                    } else if (element.classList.contains('animate-left')) {
-                        element.classList.add('animate__fadeInLeft');
-                    } else if (element.classList.contains('animate-right')) {
-                        element.classList.add('animate__fadeInRight');
-                    }
+                if (elementPosition < windowHeight - 100 && !element.classList.contains('in-view')) {
+                    element.classList.add('in-view');
                 }
             });
         }
+        
+        // Add bounce animation to icons on hover
+        function addIconAnimations() {
+            const icons = document.querySelectorAll('.facility-icon, .feature-icon, .course-icon');
+            
+            icons.forEach(icon => {
+                icon.addEventListener('mouseenter', function() {
+                    this.classList.add('bounce');
+                });
+                
+                icon.addEventListener('mouseleave', function() {
+                    this.classList.remove('bounce');
+                });
+            });
+        }
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            animateOnScroll();
+            addIconAnimations();
+        });
         
         window.addEventListener('scroll', animateOnScroll);
         window.addEventListener('load', animateOnScroll);
